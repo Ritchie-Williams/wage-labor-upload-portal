@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Wage and Labor Audit Payment Receipt</title>
+
+  <style>
+    :root {
+      --primary: #1f3557;
+      --primary-light: #1f5f9f;
+      --background: #f3f6fa;
+      --card: #ffffff;
+      --border: #d3dae5;
+      --text: #202938;
+      --muted: #5f6b7a;
+      --danger: #b42318;
+      --success: #1f7a4d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef3f8, #dfe7f1);
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(31, 53, 87, 0.16);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      padding: 26px 22px;
+      background: var(--primary);
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      line-height: 1.3;
+    }
+
+    .header p {
+      margin: 10px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.92;
+    }
+
+    .content {
+      padding: 24px 22px 28px;
+    }
+
+    .instructions {
+      background: #eef5fc;
+      border-left: 5px solid var(--primary-light);
+      padding: 14px;
+      border-radius: 10px;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 22px;
+      font-size: 0.95rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 18px 0 8px;
+      color: var(--primary);
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      background: #ffffff;
+    }
+
+    .page-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 18px;
+      background: #fbfcfe;
+    }
+
+    .page-title {
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .camera-button,
+    .clear-button,
+    .submit-button,
+    .capture-button,
+    .cancel-button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 13px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .camera-button {
+      background: var(--primary-light);
+      color: #ffffff;
+    }
+
+    .camera-button:hover {
+      background: #184c80;
+    }
+
+    .clear-button {
+      background: #edf0f5;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+    .submit-button {
+      background: var(--primary-light);
+      color: #ffffff;
+      margin-top: 24px;
+      padding: 15px;
+    }
+
+    .submit-button:hover {
+      background: #184c80;
+    }
+
+    .choose-file-label {
+      margin-top: 14px;
+    }
+
+    .preview {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 10px;
+    }
+
+    .preview img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .pdf-preview {
+      padding: 10px;
+      background: #f5f7fa;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 18px;
+      line-height: 1.4;
+    }
+
+    .error,
+    .success {
+      display: none;
+      padding: 13px;
+      border-radius: 10px;
+      margin-top: 16px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.35;
+    }
+
+    .error {
+      background: #fef3f2;
+      color: var(--danger);
+      border: 1px solid #fecdca;
+    }
+
+    .success {
+      background: #ecfdf3;
+      color: var(--success);
+      border: 1px solid #abefc6;
+    }
+
+    .camera-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.92);
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .camera-card {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      background: #111827;
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .camera-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      max-height: 70vh;
+      background: #000000;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    .capture-button {
+      background: #22c55e;
+      color: #ffffff;
+    }
+
+    .cancel-button {
+      background: #374151;
+      color: #ffffff;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 0 22px 22px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .header h1 {
+        font-size: 1.22rem;
+      }
+
+      .content {
+        padding: 20px 16px 24px;
+      }
+
+      .header {
+        padding: 22px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <section class="header">
+      <h1>Wage and Labor Audit Payment Receipt</h1>
+      <p>Document Submission</p>
+    </section>
+
+    <section class="content">
+      <div class="instructions">
+        Enter your full legal name, then upload clear photos or files of your signed documents.
+        Page 1 is required. Pages 2 and 3 are optional.
+      </div>
+
+      <form
+        id="receiptForm"
+        action="YOUR_AZURE_UPLOAD_ENDPOINT"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="legalName">Full Legal Name</label>
+        <input
+          type="text"
+          id="legalName"
+          name="legalName"
+          autocomplete="name"
+          required
+        />
+
+        <div class="page-box">
+          <div class="page-title">Page 1 - Required</div>
+          <div class="page-subtitle">Take a photo with your phone camera or choose a file from your device.</div>
+
+          <button type="button" class="camera-button" onclick="openCamera(1)">
+            Take Photo for Page 1
+          </button>
+
+          <label class="choose-file-label" for="page1">Or Choose File for Page 1</label>
+          <input
+            type="file"
+            id="page1"
+            name="page1"
+            accept="image/*,.pdf"
+            required
+          />
+
+          <div class="preview" id="preview1"></div>
+
+          <button type="button" class="clear-button" id="clear1" onclick="clearPage(1)">
+            Clear Page 1
+          </button>
+        </div>
+
+        <div class="page-box">
+          <div class="page-title">Page 2 - Optional</div>
+          <div class="page-subtitle">Use this only if your signed documents have a second page.</div>
+
+          <button type="button" class="camera-button" onclick="openCamera(2)">
+            Take Photo for Page 2
+          </button>
+
+          <label class="choose-file-label" for="page2">Or Choose File for Page 2</label>
+          <input
+            type="file"
+            id="page2"
+            name="page2"
+            accept="image/*,.pdf"
+          />
+
+          <div class="preview" id="preview2"></div>
+
+          <button type="button" class="clear-button" id="clear2" onclick="clearPage(2)">
+            Clear Page 2
+          </button>
+        </div>
+
+        <div class="page-box">
+          <div class="page-title">Page 3 - Optional</div>
+          <div class="page-subtitle">Use this only if your signed documents have a third page.</div>
+
+          <button type="button" class="camera-button" onclick="openCamera(3)">
+            Take Photo for Page 3
+          </button>
+
+          <label class="choose-file-label" for="page3">Or Choose File for Page 3</label>
+          <input
+            type="file"
+            id="page3"
+            name="page3"
+            accept="image/*,.pdf"
+          />
+
+          <div class="preview" id="preview3"></div>
+
+          <button type="button" class="clear-button" id="clear3" onclick="clearPage(3)">
+            Clear Page 3
+          </button>
+        </div>
+
+        <div class="note">
+          Camera access requires the page to be opened from a secure HTTPS site.
+          If the camera does not open, use the Choose File option instead.
+        </div>
+
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success">
+          Your documents are ready to submit.
+        </div>
+
+        <button type="submit" class="submit-button">
+          Submit Documents
+        </button>
+      </form>
+    </section>
+
+    <section class="footer">
+      This page is for collecting signed document pages related to audit payment receipt processing.
+    </section>
+  </main>
+
+  <div id="cameraPanel" class="camera-panel">
+    <div class="camera-card">
+      <h2 id="cameraTitle">Take Photo</h2>
+
+      <video id="cameraVideo" autoplay playsinline></video>
+      <canvas id="cameraCanvas"></canvas>
+
+      <button type="button" class="capture-button" onclick="capturePhoto()">
+        Use This Photo
+      </button>
+
+      <button type="button" class="cancel-button" onclick="stopCamera()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = null;
+    let cameraStream = null;
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+      "application/pdf"
+    ];
+
+    function showError(message) {
+      const error = document.getElementById("errorMessage");
+      error.textContent = message;
+      error.style.display = "block";
+      document.getElementById("successMessage").style.display = "none";
+    }
+
+    function clearMessages() {
+      document.getElementById("errorMessage").style.display = "none";
+      document.getElementById("successMessage").style.display = "none";
+    }
+
+    async function openCamera(pageNumber) {
+      clearMessages();
+
+      currentPage = pageNumber;
+
+      const panel = document.getElementById("cameraPanel");
+      const video = document.getElementById("cameraVideo");
+      const title = document.getElementById("cameraTitle");
+
+      title.textContent = "Take Photo for Page " + pageNumber;
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showError("Camera access is not supported in this browser. Please use Choose File instead.");
+        return;
+      }
+
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" }
+          },
+          audio: false
+        });
+
+        video.srcObject = cameraStream;
+        panel.style.display = "block";
+      } catch (error) {
+        showError("Camera access was blocked or unavailable. Please use Choose File instead.");
+      }
+    }
+
+    function capturePhoto() {
+      const video = document.getElementById("cameraVideo");
+      const canvas = document.getElementById("cameraCanvas");
+      const input = document.getElementById("page" + currentPage);
+
+      if (!video.videoWidth || !video.videoHeight) {
+        showError("The camera is still loading. Please try again.");
+        return;
+      }
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(function(blob) {
+        if (!blob) {
+          showError("Unable to capture photo. Please try again or use Choose File.");
+          return;
+        }
+
+        const fileName = "page-" + currentPage + "-" + Date.now() + ".jpg";
+        const photoFile = new File([blob], fileName, { type: "image/jpeg" });
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(photoFile);
+        input.files = dataTransfer.files;
+
+        updatePreview(currentPage);
+        stopCamera();
+      }, "image/jpeg", 0.92);
+    }
+
+    function stopCamera() {
+      const panel = document.getElementById("cameraPanel");
+      const video = document.getElementById("cameraVideo");
+
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+      }
+
+      cameraStream = null;
+      video.srcObject = null;
+      panel.style.display = "none";
+    }
+
+    function updatePreview(pageNumber) {
+      clearMessages();
+
+      const input = document.getElementById("page" + pageNumber);
+      const preview = document.getElementById("preview" + pageNumber);
+      const clearButton = document.getElementById("clear" + pageNumber);
+
+      preview.innerHTML = "";
+      preview.style.display = "none";
+      clearButton.style.display = "none";
+
+      if (!input.files || input.files.length === 0) {
+        return;
+      }
+
+      const file = input.files[0];
+
+      if (file.size > 10 * 1024 * 1024) {
+        input.value = "";
+        showError("Each uploaded page must be 10 MB or smaller.");
+        return;
+      }
+
+      if (file.type && !allowedTypes.includes(file.type)) {
+        input.value = "";
+        showError("Only photo image files or PDF files are allowed.");
+        return;
+      }
+
+      if (file.type && file.type.startsWith("image/")) {
+        const img = document.createElement("img");
+        img.alt = "Preview for Page " + pageNumber;
+        img.src = URL.createObjectURL(file);
+        preview.appendChild(img);
+      } else if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+        const pdfBox = document.createElement("div");
+        pdfBox.className = "pdf-preview";
+        pdfBox.textContent = "PDF selected: " + file.name;
+        preview.appendChild(pdfBox);
+      } else {
+        const fileBox = document.createElement("div");
+        fileBox.className = "pdf-preview";
+        fileBox.textContent = "File selected: " + file.name;
+        preview.appendChild(fileBox);
+      }
+
+      preview.style.display = "block";
+      clearButton.style.display = "block";
+    }
+
+    function clearPage(pageNumber) {
+      const input = document.getElementById("page" + pageNumber);
+      const preview = document.getElementById("preview" + pageNumber);
+      const clearButton = document.getElementById("clear" + pageNumber);
+
+      input.value = "";
+      preview.innerHTML = "";
+      preview.style.display = "none";
+      clearButton.style.display = "none";
+      clearMessages();
+    }
+
+    document.getElementById("page1").addEventListener("change", function() {
+      updatePreview(1);
+    });
+
+    document.getElementById("page2").addEventListener("change", function() {
+      updatePreview(2);
+    });
+
+    document.getElementById("page3").addEventListener("change", function() {
+      updatePreview(3);
+    });
+
+    document.getElementById("receiptForm").addEventListener("submit", function(event) {
+      clearMessages();
+
+      const legalName = document.getElementById("legalName").value.trim();
+      const page1 = document.getElementById("page1").files[0];
+
+      if (!legalName) {
+        event.preventDefault();
+        showError("Please enter your full legal name.");
+        return;
+      }
+
+      if (!page1) {
+        event.preventDefault();
+        showError("Please upload or take a photo for Page 1.");
+        return;
+      }
+
+      const allFiles = [
+        document.getElementById("page1").files[0],
+        document.getElementById("page2").files[0],
+        document.getElementById("page3").files[0]
+      ].filter(Boolean);
+
+      for (const file of allFiles) {
+        if (file.size > 10 * 1024 * 1024) {
+          event.preventDefault();
+          showError("Each uploaded page must be 10 MB or smaller.");
+          return;
+        }
+
+        if (file.type && !allowedTypes.includes(file.type)) {
+          event.preventDefault();
+          showError("Only photo image files or PDF files are allowed.");
+          return;
+        }
+      }
+
+      document.getElementById("successMessage").style.display = "block";
+    });
+
+    window.addEventListener("beforeunload", function() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
