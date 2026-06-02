@@ -1,8 +1,8 @@
 {
-  "name": "wage-labor-api",
+  "name": "wage-labor-upload-api",
   "version": "1.0.0",
+  "main": "submitReceipt/index.js",
   "dependencies": {
-    "@azure/storage-blob": "^12.18.0",
     "busboy": "^1.6.0",
     "uuid": "^11.0.0"
   }
